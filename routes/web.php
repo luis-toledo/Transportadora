@@ -3,6 +3,7 @@
 use App\Http\Controllers\CaminhaoController;
 use App\Http\Controllers\CargaController;
 use App\Http\Controllers\CarretaController;
+use App\Http\Controllers\freteController;
 use App\Http\Controllers\MotoristaController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,6 +21,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/fretes', [freteController::class, 'index']);
+Route::get('/fretes/criar', [freteController::class, 'create']);
+Route::post('/fretes/salvar', [freteController::class, 'store']);
 
 Route::get('/caminhoes', [CaminhaoController::class, 'index']);
 Route::get('/caminhoes/criar', [CaminhaoController::class, 'create']);

@@ -13,7 +13,17 @@ class CaminhaoController extends Controller
     public function index()
     {
 
-        $caminhoes = DB::select('select * from caminhao');
+        $caminhoes = DB::select
+        ('
+            select c.*,
+                   m.nome,
+                   cr.tipo
+              from caminhao c,
+                   motorista m,
+                   carreta cr
+             where c.motorista_id = m.id
+               and c.carreta_id  = cr.id
+        ');
         return view('caminhoes.index')->with('caminhoes', $caminhoes);
     }
 

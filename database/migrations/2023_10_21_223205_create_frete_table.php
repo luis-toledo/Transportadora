@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('frete', function (Blueprint $table) {
             $table->id();
-            $table->decimal('valor', 10, 2)->change();
-            $table->decimal('kilometros', 10, 2)->change();
+            $table->decimal('valor', 10, 2);
+            $table->decimal('kilometros', 10, 2);
             $table->string('tipo_carga', length:255);
             $table->foreignId('caminhao_id')->constrained('caminhao');
             $table->foreignId('carga_id')->constrained('carga');

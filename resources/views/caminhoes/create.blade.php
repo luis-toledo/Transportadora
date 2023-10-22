@@ -12,9 +12,9 @@
         <div class="mb-3">
           <label for="categoria" class="form-label">Categoria da CNH</label>
           <select class="form-select" name="categoria" id="categoria">
-            <option selected value="1">C</option>
-            <option value="2">D</option>
-            <option value="3">E</option>
+            <option selected value="C">C</option>
+            <option value="D">D</option>
+            <option value="E">E</option>
           </select>
         </div>
         <div class="mb-3">

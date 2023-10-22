@@ -20,17 +20,14 @@
         </thead>
         <tbody>
             @foreach($caminhoes as $caminhoes)
-                <?php
-                    $motorista = DB::select('select * from motorista where id = ?', [$caminhoes->motorista_id]);
-                    $carreta = DB::select('select * from carreta where id = ?', [$caminhoes->carreta_id]);
-                ?>
+
                 <tr>
                     <td>{{ $caminhoes->modelo }}</td>
                     <td>{{ $caminhoes->placa }}</td>
                     <td>{{ $caminhoes->categoria_cnh_necessaria }}</td>
                     <td>{{ $caminhoes->ano }}</td>
-                    <td>{{ $motorista[0]->nome }}</td>
-                    <td>{{ $carreta[0]->tipo }}</td>
+                    <td>{{ $caminhoes->nome }}</td>
+                    <td>{{ $caminhoes->tipo }}</td>
                 </tr>
             @endforeach
         </tbody>
