@@ -13,6 +13,7 @@
                 <th scope="col">Tipo</th>
                 <th scope="col">Capacidade de carga</th>
                 <th scope="col">Ano de Fabricação</th>
+                <th scope="col">Açoes</th>
             </tr>
         </thead>
         <tbody>
@@ -21,6 +22,16 @@
                     <td>{{ $carretas->tipo }}</td>
                     <td>{{ $carretas->capacidade_carga }}</td>
                     <td>{{ $carretas->ano_fabricacao }}</td>
+                    <td>
+                        <div class="d-flex gap-3 align-items-center">
+                            <a href="/carretas/editar/{{ $carretas->id }}" class="btn btn-primary">Editar</a>
+                            <form action="/carretas/deletar/{{ $carretas->id }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">Excluir</button>
+                            </form>
+                        </div>
+                    </td>
                 </tr>
             @endforeach
         </tbody>

@@ -69,6 +69,13 @@ class CarretaController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        if(DB::select('select * from caminhao where carreta_id = ?', [$id])){
+            $mensagem = false;
+            return view('carretas.delete')->with('mensagem', $mensagem);
+        }else{
+            $mensagem = true;
+            DB::delete('delete from carreta where id = ?', [$id]);
+            return view('carretas.delete')->with('mensagem', $mensagem);
+        }
     }
 }

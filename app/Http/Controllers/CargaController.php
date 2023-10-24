@@ -68,6 +68,13 @@ class CargaController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        if(DB::select('select * from frete where carga_id = ?', [$id])){
+            $mensagem = false;
+            return view('cargas.delete')->with('mensagem', $mensagem);
+        }else{
+            $mensagem = true;
+            DB::delete('delete from carga where id = ?', [$id]);
+            return view('cargas.delete')->with('mensagem', $mensagem);
+        }
     }
 }

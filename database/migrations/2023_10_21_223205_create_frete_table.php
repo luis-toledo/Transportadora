@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('frete', function (Blueprint $table) {
+        Schema::create('fretes', function (Blueprint $table) {
             $table->id();
             $table->decimal('valor', 10, 2);
             $table->decimal('kilometros', 10, 2);
             $table->string('tipo_carga', length:255);
-            $table->foreignId('caminhao_id')->constrained('caminhao');
-            $table->foreignId('carga_id')->constrained('carga');
+            $table->foreignId('caminhao_id')->constrained('caminhoes');
+            $table->foreignId('carga_id')->constrained('cargas');
         });
     }
 

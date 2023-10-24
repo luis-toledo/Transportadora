@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Caminhao;
+use App\Models\Carreta;
+use App\Models\Frete;
+use App\Models\Motorista;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -12,19 +16,11 @@ class CaminhaoController extends Controller
      */
     public function index()
     {
-
-        $caminhoes = DB::select
-        ('
-            select c.*,
-                   m.nome,
-                   cr.tipo
-              from caminhao c,
-                   motorista m,
-                   carreta cr
-             where c.motorista_id = m.id
-               and c.carreta_id  = cr.id
-        ');
-        return view('caminhoes.index')->with('caminhoes', $caminhoes);
+        $caminhoes = Caminhao::join('motoristas', 'caminhoes.motorista_id', '=', 'motoristas.id')
+        ->join('carretas', 'caminhoes.carreta_id', '=', 'carretas.id')
+        ->select('caminhoes.*', 'motoristas.nome', 'carretas.tipo')
+        ->get();
+        return view('caminhoes.index')->with('caminhoes', $caminhoes)->with('mensagem', session('mensagem'));
     }
 
     /**
@@ -32,19 +28,11 @@ class CaminhaoController extends Controller
      */
     public function create()
     {
-        $motoristas = DB::select
-        ('
-            select *
-              from motorista
-             where id not in (select motorista_id from caminhao)
-        ');
+        $motoristas = Motorista::whereDoesntHave('caminhoes')
+                        ->get();
 
-        $carretas = DB::select
-        ('
-            select *
-              from carreta
-             where id not in (select carreta_id from caminhao)
-        ');
+        $carretas = Carreta::whereDoesntHave('caminhoes')
+        ->get();
         return view('caminhoes.create')->with('motoristas', $motoristas)->with('carretas', $carretas);
     }
 
@@ -53,14 +41,15 @@ class CaminhaoController extends Controller
      */
     public function store(Request $request)
     {
-        $modelo = $request->input('modelo');
-        $placa = $request->input('placa');
-        $categoria = $request->input('categoria');
-        $ano = $request->input('ano');
-        $motorista_id = $request->input('motorista');
-        $carreta_id = $request->input('carreta');
+        $caminhao = new Caminhao();
+        $caminhao->caminhao->modelo = $request->input('modelo');
+        $caminhao->placa = $request->input('placa');
+        $caminhao->categoria = $request->input('categoria');
+        $caminhao->ano = $request->input('ano');
+        $caminhao->motorista_id = $request->input('motorista');
+        $caminhao->carreta_id = $request->input('carreta');
 
-        if(DB::insert('insert into caminhao (modelo, placa, categoria_cnh_necessaria, ano, motorista_id, carreta_id) values (?, ?, ?, ?, ?, ?)', [$modelo, $placa, $categoria, $ano, $motorista_id, $carreta_id])){
+        if($caminhao->save()){
             return redirect('/caminhoes');
         }else{
             return redirect('/caminhoes/criar');
@@ -82,7 +71,7 @@ class CaminhaoController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        echo $id;
     }
 
     /**
@@ -98,6 +87,15 @@ class CaminhaoController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+
+        if(Frete::where('caminhao_id', $id)->exists()){
+            $mensagem = false;
+            //dd($mensagem);
+            return view('caminhoes.delete')->with('mensagem', $mensagem);
+        }else{
+            $mensagem = true;
+            Caminhao::where('id', $id)->delete();
+            return view('caminhoes.delete')->with('mensagem', $mensagem);
+        }
     }
 }

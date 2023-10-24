@@ -12,6 +12,7 @@
             <tr>
                 <th scope="col">Descricao</th>
                 <th scope="col">Peso</th>
+                <th scope="col">Açoes</th>
             </tr>
         </thead>
         <tbody>
@@ -19,6 +20,16 @@
                 <tr>
                     <td>{{ $cargas->descricao }}</td>
                     <td>{{ $cargas->peso }}</td>
+                    <td>
+                        <div class="d-flex gap-3 align-items-center">
+                            <a href="/cargas/editar/{{ $cargas->id }}" class="btn btn-primary">Editar</a>
+                            <form action="/cargas/deletar/{{ $cargas->id }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">Excluir</button>
+                            </form>
+                        </div>
+                    </td>
                 </tr>
             @endforeach
         </tbody>

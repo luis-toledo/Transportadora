@@ -1,5 +1,4 @@
 <x-layout title="Caminhões" >
-
     <a href="/caminhoes/criar">Cadastrar um novo Caminhão</a>
     <div class="d-flex flex-row align-items-center gap-3 my-2">
         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-truck-flatbed " viewBox="0 0 16 16">
@@ -16,6 +15,7 @@
                 <th scope="col">Ano</th>
                 <th scope="col">Motorista</th>
                 <th scope="col">Carreta</th>
+                <th scope="col">Açoes</th>
             </tr>
         </thead>
         <tbody>
@@ -28,6 +28,16 @@
                     <td>{{ $caminhoes->ano }}</td>
                     <td>{{ $caminhoes->nome }}</td>
                     <td>{{ $caminhoes->tipo }}</td>
+                    <td>
+                        <div class="d-flex gap-3 align-items-center">
+                            <a href="/caminhoes/editar/{{ $caminhoes->id }}" class="btn btn-primary">Editar</a>
+                            <form action="/caminhoes/deletar/{{ $caminhoes->id }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">Excluir</button>
+                            </form>
+                        </div>
+                    </td>
                 </tr>
             @endforeach
         </tbody>

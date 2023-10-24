@@ -2,27 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Caminhao;
+use App\Models\Carga;
+use App\Models\Frete;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
-class freteController extends Controller
+class FreteController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $fretes = DB::select
-        ('
-            select f.*,
-                   ca.modelo,
-                   cg.descricao
-              from frete f,
-                   caminhao ca,
-                   carga cg
-             where f.caminhao_id = ca.id
-               and f.carga_id    = cg.id
-        ');
+        $fretes = Frete::join('caminhoes', 'fretes.caminhao_id', '=', 'caminhoes.id')
+        ->join('cargas', 'fretes.carga_id', '=', 'cargas.id')
+        ->select('fretes.*', 'caminhoes.modelo', 'cargas.descricao')
+        ->get();
         return view('fretes.index')->with('fretes', $fretes);
     }
 
@@ -31,8 +26,8 @@ class freteController extends Controller
      */
     public function create()
     {
-        $caminhoes = DB::select('select * from caminhao');
-        $cargas    = DB::select('select * from carga');
+        $caminhoes = Caminhao::all();
+        $cargas    = Carga::all();
         return view('fretes.create')->with('caminhoes', $caminhoes)->with('cargas', $cargas);
     }
 
@@ -41,21 +36,19 @@ class freteController extends Controller
      */
     public function store(Request $request)
     {
-        $tipo_carga = $request->input('descricao');
-        $valor = $request->input('valor');
-        $kilometros = $request->input('kilometros');
-        $caminhao_id = $request->input('caminhao');
-        $carga_id = $request->input('carga');
+        $frete = new Frete();
+        $frete->tipo_carga = $request->input('descricao');
+        $frete->valor = $request->input('valor');
+        $frete->kilometros = $request->input('kilometros');
+        $frete->caminhao_id = $request->input('caminhao');
+        $frete->carga_id = $request->input('carga');
 
-        if(DB::insert('insert into frete (tipo_carga, valor, kilometros, caminhao_id, carga_id) values (?, ?, ?, ?, ?)', [$tipo_carga, $valor, $kilometros, $caminhao_id, $carga_id])){
-            return redirect('/fretes');//->with('success', 'Frete cadastrado com sucesso!');
+        if($frete->save()){
+            return redirect('/fretes');
         }else{
-            return redirect('/fretes/criar');//->with('error', 'Erro ao cadastrar frete!');
+            return redirect('/fretes/criar');
         }
 
-        // if($tipo_carga == null || $valor == null || $kilometros == null || $caminhao_id == null || $carga_id == null){
-        //     return redirect()->route('fretes.create')->with('error', 'Todos os campos devem ser preenchidos!');
-        // }
     }
 
     /**
@@ -87,6 +80,8 @@ class freteController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Frete::where('id', $id)->delete();
+
+        return view('fretes.delete');
     }
 }

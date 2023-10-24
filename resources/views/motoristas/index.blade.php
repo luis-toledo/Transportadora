@@ -13,6 +13,7 @@
                 <th scope="col">Nome</th>
                 <th scope="col">Idade</th>
                 <th scope="col">Categoria de CNH</th>
+                <th scope="col">Açoes</th>
             </tr>
         </thead>
         <tbody>
@@ -21,6 +22,12 @@
                     <td>{{ $motoristas->nome }}</td>
                     <td>{{ $motoristas->idade }}</td>
                     <td>{{ $motoristas->categoria_cnh }}</td>
+                    <td>
+                        <div class="d-flex flex-row align-items-center gap-3">
+                            <button type="button" class="btn btn-primary">Editar</button>
+                            <button type="button" class="btn btn-danger">Excluir</button>
+                        </div>
+                    </td>
                 </tr>
             @endforeach
         </tbody>

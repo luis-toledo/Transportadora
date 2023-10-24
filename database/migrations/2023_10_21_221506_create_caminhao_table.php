@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('caminhao', function (Blueprint $table) {
+        Schema::create('caminhoes', function (Blueprint $table) {
             $table->id();
             $table->string('placa', length:7 )->unique();
             $table->string('modelo', length:255);
             $table->string('categoria_cnh_necessaria', length:1);
             $table->integer('ano');
-            $table->foreignId('motorista_id')->constrained('motorista');
-            $table->foreignId('carreta_id')->constrained('carreta');
+            $table->foreignId('motorista_id')->constrained('motoristas');
+            $table->foreignId('carreta_id')->constrained('carretas');
         });
     }
 
