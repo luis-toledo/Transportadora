@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Caminhao;
+use App\Models\Caminhoe;
 use App\Models\Carga;
 use App\Models\Frete;
 use Illuminate\Http\Request;
@@ -26,7 +26,7 @@ class FreteController extends Controller
      */
     public function create()
     {
-        $caminhoes = Caminhao::all();
+        $caminhoes = Caminhoe::all();
         $cargas    = Carga::all();
         return view('fretes.create')->with('caminhoes', $caminhoes)->with('cargas', $cargas);
     }
@@ -64,7 +64,16 @@ class FreteController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $frete = Frete::find($id);
+
+        $caminhoes = Caminhoe::all();
+        $cargas    = Carga::all();
+
+        $caminhao = Caminhoe::find($frete->caminhao_id);
+        $carga    = Carga::find($frete->carga_id);
+
+        return view('fretes.edit')->with('frete', $frete)->with('caminhoes', $caminhoes)
+               ->with('cargas', $cargas)->with('caminhao', $caminhao)->with('carga', $carga);
     }
 
     /**
@@ -72,7 +81,15 @@ class FreteController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $frete = Frete::find($id);
+        $frete->tipo_carga = $request->input('descricao');
+        $frete->valor = $request->input('valor');
+        $frete->kilometros = $request->input('kilometros');
+        $frete->caminhao_id = $request->input('caminhao');
+        $frete->carga_id = $request->input('carga');
+
+        $frete->save();
+        return redirect('/fretes');
     }
 
     /**

@@ -13,4 +13,5 @@ class Motorista extends Model
         'categoria_cnh',
         'idade',
     ];
+    public $timestamps = false;
 }

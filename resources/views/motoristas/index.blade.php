@@ -23,9 +23,13 @@
                     <td>{{ $motoristas->idade }}</td>
                     <td>{{ $motoristas->categoria_cnh }}</td>
                     <td>
-                        <div class="d-flex flex-row align-items-center gap-3">
-                            <button type="button" class="btn btn-primary">Editar</button>
-                            <button type="button" class="btn btn-danger">Excluir</button>
+                        <div class="d-flex gap-3 align-items-center">
+                            <a href="/motoristas/editar/{{ $motoristas->id }}" class="btn btn-primary">Editar</a>
+                            <form action="/motoristas/deletar/{{ $motoristas->id }}" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger">Excluir</button>
+                            </form>
                         </div>
                     </td>
                 </tr>

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Carga;
+use App\Models\Frete;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -12,7 +14,7 @@ class CargaController extends Controller
      */
     public function index()
     {
-        $cargas = DB::select('select * from carga');
+        $cargas =  Carga::all();
         return view('cargas.index')->with('cargas', $cargas);
     }
 
@@ -29,10 +31,11 @@ class CargaController extends Controller
      */
     public function store(Request $request)
     {
-        $descricao = $request->input('descricao');
-        $peso = $request->input('peso');
+        $carga = new Carga();
+        $carga->descricao = $request->input('descricao');
+        $carga->peso = $request->input('peso');
 
-        if (DB::insert('insert into carga (descricao, peso) values (?, ?)', [$descricao, $peso])){
+        if ($carga->save()){
             return redirect('/cargas');
         }else{
             return redirect('/cargas/criar');
@@ -52,7 +55,8 @@ class CargaController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $carga = Carga::find($id);
+        return view('cargas.edit')->with('carga', $carga);
     }
 
     /**
@@ -60,7 +64,13 @@ class CargaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $carga = Carga::find($id);
+        $carga->descricao = $request->input('descricao');
+        $carga->peso = $request->input('peso');
+
+        $carga->save();
+        return redirect('/cargas');
+
     }
 
     /**
@@ -68,12 +78,13 @@ class CargaController extends Controller
      */
     public function destroy(string $id)
     {
-        if(DB::select('select * from frete where carga_id = ?', [$id])){
+
+        if(Frete::where('carga_id', $id)->exists()){
             $mensagem = false;
             return view('cargas.delete')->with('mensagem', $mensagem);
         }else{
             $mensagem = true;
-            DB::delete('delete from carga where id = ?', [$id]);
+            Carga::where('id', $id)->delete();
             return view('cargas.delete')->with('mensagem', $mensagem);
         }
     }

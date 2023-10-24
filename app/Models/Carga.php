@@ -12,4 +12,6 @@ class Carga extends Model
         'descricao',
         'peso',
     ];
+
+    public $timestamps = false;
 }

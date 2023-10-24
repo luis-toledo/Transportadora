@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Caminhao;
+use App\Models\Caminhoe;
 use App\Models\Carreta;
 use App\Models\Frete;
 use App\Models\Motorista;
@@ -16,7 +16,7 @@ class CaminhaoController extends Controller
      */
     public function index()
     {
-        $caminhoes = Caminhao::join('motoristas', 'caminhoes.motorista_id', '=', 'motoristas.id')
+        $caminhoes = Caminhoe::join('motoristas', 'caminhoes.motorista_id', '=', 'motoristas.id')
         ->join('carretas', 'caminhoes.carreta_id', '=', 'carretas.id')
         ->select('caminhoes.*', 'motoristas.nome', 'carretas.tipo')
         ->get();
@@ -28,11 +28,16 @@ class CaminhaoController extends Controller
      */
     public function create()
     {
-        $motoristas = Motorista::whereDoesntHave('caminhoes')
-                        ->get();
+        $motoristas = Motorista::whereNotIn('id', function ($query) {
+            $query->select('motorista_id')
+                ->from('caminhoes');
+        })->get();
 
-        $carretas = Carreta::whereDoesntHave('caminhoes')
-        ->get();
+        $carretas = Carreta::whereNotIn('id', function ($query) {
+            $query->select('carreta_id')
+                ->from('caminhoes');
+        })->get();
+
         return view('caminhoes.create')->with('motoristas', $motoristas)->with('carretas', $carretas);
     }
 
@@ -41,10 +46,10 @@ class CaminhaoController extends Controller
      */
     public function store(Request $request)
     {
-        $caminhao = new Caminhao();
-        $caminhao->caminhao->modelo = $request->input('modelo');
+        $caminhao = new Caminhoe();
+        $caminhao->modelo = $request->input('modelo');
         $caminhao->placa = $request->input('placa');
-        $caminhao->categoria = $request->input('categoria');
+        $caminhao->categoria_cnh_necessaria = $request->input('categoria');
         $caminhao->ano = $request->input('ano');
         $caminhao->motorista_id = $request->input('motorista');
         $caminhao->carreta_id = $request->input('carreta');
@@ -71,7 +76,24 @@ class CaminhaoController extends Controller
      */
     public function edit(string $id)
     {
-        echo $id;
+        $caminhao = Caminhoe::find($id);
+
+        $motoristas = Motorista::whereNotIn('id', function ($query) {
+            $query->select('motorista_id')
+                ->from('caminhoes');
+        })->get();
+
+        $carretas = Carreta::whereNotIn('id', function ($query) {
+            $query->select('carreta_id')
+                ->from('caminhoes');
+        })->get();
+
+        $motorista = Motorista::find($caminhao->motorista_id);
+
+        $carreta = Carreta::find($caminhao->carreta_id);
+
+        return view('caminhoes.edit')->with('caminhao', $caminhao)->with('motoristas', $motoristas)->with('carretas', $carretas)
+                    ->with('motorista', $motorista)->with('carreta', $carreta);
     }
 
     /**
@@ -79,7 +101,17 @@ class CaminhaoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $caminhao = Caminhoe::find($id);
+        $caminhao->modelo = $request->input('modelo');
+        $caminhao->placa = $request->input('placa');
+        $caminhao->categoria_cnh_necessaria = $request->input('categoria');
+        $caminhao->ano = $request->input('ano');
+        $caminhao->motorista_id = $request->input('motorista');
+        $caminhao->carreta_id = $request->input('carreta');
+
+        $caminhao->save();
+        return redirect('/caminhoes');
+
     }
 
     /**
@@ -90,11 +122,10 @@ class CaminhaoController extends Controller
 
         if(Frete::where('caminhao_id', $id)->exists()){
             $mensagem = false;
-            //dd($mensagem);
             return view('caminhoes.delete')->with('mensagem', $mensagem);
         }else{
             $mensagem = true;
-            Caminhao::where('id', $id)->delete();
+            Caminhoe::where('id', $id)->delete();
             return view('caminhoes.delete')->with('mensagem', $mensagem);
         }
     }

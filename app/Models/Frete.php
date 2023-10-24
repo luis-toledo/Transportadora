@@ -16,6 +16,8 @@ class Frete extends Model
         'carga_id',
     ];
 
+    public $timestamps = false;
+    
     public function caminhao()
     {
         return $this->belongsTo(Caminhao::class);

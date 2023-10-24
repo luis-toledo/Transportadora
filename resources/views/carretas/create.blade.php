@@ -1,4 +1,4 @@
-<x-layout title="Cadastro de Motoristas">
+<x-layout title="Cadastro de Carretas">
     <form action="/carretas/salvar" method="POST">
         @csrf
         <div class="mb-3">

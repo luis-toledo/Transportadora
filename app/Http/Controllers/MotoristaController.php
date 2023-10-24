@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Caminhoe;
+use App\Models\Motorista;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -12,9 +14,10 @@ class MotoristaController extends Controller
      */
     public function index()
     {
-        $motoristas = DB::select('select * from motorista');
+
+        $motoristas = Motorista::all();
         return view('motoristas.index')->with('motoristas', $motoristas);
-        //return view('caminhoes.index')->with('html', $html);
+
     }
 
     /**
@@ -30,11 +33,12 @@ class MotoristaController extends Controller
      */
     public function store(Request $request)
     {
-        $nome = $request->input('nome');
-        $idade = $request->input('idade');
-        $categoria = $request->input('categoria');
+        $motorista = new Motorista();
+        $motorista->nome = $request->input('nome');
+        $motorista->idade = $request->input('idade');
+        $motorista->categoria_cnh = $request->input('categoria');
 
-        if (DB::insert('insert into motorista (nome, idade, categoria_cnh) values (?, ?, ?)', [$nome, $idade, $categoria])){
+        if ($motorista->save()){
             return redirect('/motoristas');
         }else{
             return redirect('/motoristas/criar');
@@ -55,7 +59,8 @@ class MotoristaController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $motorista = Motorista::find($id);
+        return view('motoristas.edit')->with('motorista', $motorista);
     }
 
     /**
@@ -63,7 +68,13 @@ class MotoristaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $motorista = Motorista::find($id);
+        $motorista->nome = $request->input('nome');
+        $motorista->idade = $request->input('idade');
+        $motorista->categoria_cnh = $request->input('categoria');
+
+        $motorista->save();
+        return redirect('/motoristas');
     }
 
     /**
@@ -71,6 +82,14 @@ class MotoristaController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        if(Caminhoe::where('motorista_id', $id)->exists()){
+            $mensagem = false;
+            return view('motoristas.delete')->with('mensagem', $mensagem);
+
+        }else{
+            $mensagem = true;
+            Motorista::where('id', $id)->delete();
+            return view('motoristas.delete')->with('mensagem', $mensagem);
+        }
     }
 }

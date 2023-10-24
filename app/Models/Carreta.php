@@ -13,4 +13,6 @@ class Carreta extends Model
         'capacidade_carga',
         'ano_fabricacao',
     ];
+
+    public $timestamps = false;
 }

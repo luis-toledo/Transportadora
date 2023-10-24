@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Caminhoe;
+use App\Models\Carreta;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+
 
 class CarretaController extends Controller
 {
@@ -12,7 +14,7 @@ class CarretaController extends Controller
      */
     public function index()
     {
-        $carretas = DB::select('select * from carreta');
+        $carretas = Carreta::all();
         return view('carretas.index')->with('carretas', $carretas);
     }
 
@@ -29,11 +31,12 @@ class CarretaController extends Controller
      */
     public function store(Request $request)
     {
-        $tipo = $request->input('tipo');
-        $capacidade = $request->input('capacidade');
-        $ano = $request->input('ano');
+        $carreta = new Carreta();
+        $carreta->tipo = $request->input('tipo');
+        $carreta->capacidade_carga = $request->input('capacidade');
+        $carreta->ano_fabricacao = $request->input('ano');
 
-        if (DB::insert('insert into carreta (tipo, capacidade_carga, ano_fabricacao) values (?, ?, ?)', [$tipo, $capacidade, $ano])){
+        if ($carreta->save()){
             return redirect('/carretas');
         }else{
             return redirect('/carretas/criar');
@@ -53,7 +56,8 @@ class CarretaController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $carreta = Carreta::find($id);
+        return view('carretas.edit')->with('carreta', $carreta);
     }
 
     /**
@@ -61,7 +65,13 @@ class CarretaController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $carreta = Carreta::find($id);
+        $carreta->tipo = $request->input('tipo');
+        $carreta->capacidade_carga = $request->input('capacidade');
+        $carreta->ano_fabricacao = $request->input('ano');
+
+        $carreta->save();
+        return redirect('/carretas');
     }
 
     /**
@@ -69,12 +79,13 @@ class CarretaController extends Controller
      */
     public function destroy(string $id)
     {
-        if(DB::select('select * from caminhao where carreta_id = ?', [$id])){
+
+        if(Caminhoe::where('carreta_id', $id)->exists()){
             $mensagem = false;
             return view('carretas.delete')->with('mensagem', $mensagem);
         }else{
             $mensagem = true;
-            DB::delete('delete from carreta where id = ?', [$id]);
+            Carreta::where('id', $id)->delete();
             return view('carretas.delete')->with('mensagem', $mensagem);
         }
     }
