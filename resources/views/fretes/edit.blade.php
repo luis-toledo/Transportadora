@@ -3,7 +3,7 @@
         @csrf
         @method('PUT')
         <div class="mb-3">
-          <label for="descricao" class="form-label">Descricao</label>
+          <label for="descricao" class="form-label text-light">Descricao</label>
           <input
             type="text" name="descricao" class="form-control" id="descricao"
             value="{{$frete->tipo_carga}}"
@@ -11,7 +11,7 @@
         </div>
 
         <div class="mb-3">
-          <label for="kilometros" class="form-label">kilometros</label>
+          <label for="kilometros" class="form-label text-light">kilometros</label>
           <input
             type="number" name="kilometros" class="form-control" id="kilometros"
             value="{{$frete->kilometros}}"
@@ -19,7 +19,7 @@
         </div>
 
         <div class="mb-3">
-            <label for="valor" class="form-label">Valor</label>
+            <label for="valor" class="form-label text-light">Valor</label>
             <input
               type="number" name="valor" class="form-control" id="valor"
               value="{{$frete->valor}}"
@@ -27,7 +27,7 @@
         </div>
 
         <div class="mb-3">
-            <label for="caminhao" class="form-label">Caminhao</label>
+            <label for="caminhao" class="form-label text-light">Caminhao</label>
             <select class="form-select" name="caminhao" id="caminhao">
               @foreach ($caminhoes as $caminhoes)
                   @if ($caminhoes->id != $caminhao->id)
@@ -42,7 +42,7 @@
         </div>
 
         <div class="mb-3">
-            <label for="carga" class="form-label">Carga</label>
+            <label for="carga" class="form-label text-light">Carga</label>
             <select class="form-select" name="carga" id="carga">
                 @foreach ($cargas as $cargas)
                     @if ($cargas->id != $carga->id)

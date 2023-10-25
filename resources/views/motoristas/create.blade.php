@@ -2,15 +2,15 @@
     <form action="/motoristas/salvar" method="POST">
         @csrf
         <div class="mb-3">
-          <label for="nome" class="form-label">Nome</label>
+          <label for="nome" class="form-label text-light">Nome</label>
           <input type="text" name="nome" class="form-control" id="nome" />
         </div>
         <div class="mb-3">
-          <label for="idade" class="form-label">Idade</label>
+          <label for="idade" class="form-label text-light">Idade</label>
           <input type="number" name="idade" class="form-control" id="idade" />
         </div>
         <div class="mb-3">
-          <label for="categoria" class="form-label">Categoria da CNH</label>
+          <label for="categoria" class="form-label text-light">Categoria da CNH</label>
           <select class="form-select" name="categoria" id="categoria">
             <option selected value="C">C</option>
             <option value="D">D</option>
